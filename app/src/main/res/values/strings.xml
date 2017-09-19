@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Do the Rx Thing</string>
+
+    <string name="add_new_task">Add New Task</string>
+    <string name="task_entry_hint">Enter a new task</string>
+</resources>
