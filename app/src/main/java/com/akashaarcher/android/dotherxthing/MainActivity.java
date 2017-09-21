@@ -1,5 +1,6 @@
 package com.akashaarcher.android.dotherxthing;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,7 +25,7 @@ import nl.qbusict.cupboard.QueryResultIterable;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-public class MainActivity extends AppCompatActivity implements NewItemDialogFragment.NewItemDialogListener, TaskAdapter.Listener {
+public class MainActivity extends AppCompatActivity implements NewItemDialogFragment.NewItemDialogListener, TaskAdapter.Listener, UpdateItemDialogFragment.UpdateItemDialogListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -69,6 +70,13 @@ public class MainActivity extends AppCompatActivity implements NewItemDialogFrag
         newFragment.show(manager, DIALOG_TITLE);
     }
 
+
+    void openUpdateItemDialog() {
+        FragmentManager manager = getSupportFragmentManager();
+        DialogFragment newFragment = new UpdateItemDialogFragment();
+        newFragment.show(manager, DIALOG_TITLE);
+    }
+
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         // User touched the dialog's positive button
@@ -86,16 +94,44 @@ public class MainActivity extends AppCompatActivity implements NewItemDialogFrag
         Toast.makeText(getApplicationContext(), "Transaction Cancelled", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onUpdateDialogPositiveClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+        Log.i("UpdateAlertDialog", "Positive click!");
+        Toast.makeText(getApplicationContext(), "Task Updated", Toast.LENGTH_SHORT).show();
+        updateTask();
+        refreshTaskList();
+    }
+
+    @Override
+    public void onUpdateDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+        Log.i("UpdateAlertDialog", "Negative click!");
+        Toast.makeText(getApplicationContext(), "Update Cancelled", Toast.LENGTH_SHORT).show();
+//        deleteTask(task);
+//        refreshTaskList();
+    }
+
     private void addTask(Task task) {
         cupboard().withDatabase(db).put(task);
     }
 
     private void deleteTask(Task task) {
+        String currTask = task.getTaskEntry();
         cupboard().withDatabase(db).delete(task);
     }
 
+    private void updateTask() {
+        String currEntry = NewItemDialogFragment.newTaskEntry;
+        Task task = new Task(UpdateItemDialogFragment.updateTaskEntry);
+        ContentValues values = new ContentValues(1);
+        values.put("taskEntry", String.valueOf(task));
+        cupboard().withDatabase(db).update(Task.class, values, "taskEntry = ?", currEntry);
+
+    }
+
     private void refreshTaskList() {
-       adapter.setData(selectAllTasks());
+        adapter.setData(selectAllTasks());
     }
 
     private List<Task> selectAllTasks() {
@@ -119,9 +155,7 @@ public class MainActivity extends AppCompatActivity implements NewItemDialogFrag
     @Override
     public void onItemLongClicked(Task task) {
         Toast.makeText(this, "You longClicked me!", Toast.LENGTH_SHORT).show();
-        deleteTask(task);
-        refreshTaskList();
+        openUpdateItemDialog();
     }
-    
 
 }

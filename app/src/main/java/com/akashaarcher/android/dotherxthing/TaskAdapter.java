@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -63,6 +64,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         @BindView(due_date)
         TextView dueDateTv;
 
+        @BindView(R.id.delete_icon)
+        ImageView deleteTaskIv;
+
+        @BindView(R.id.edit_icon)
+        ImageView editTaskIv;
+        
         LinearLayout taskItemLayout;
 
 

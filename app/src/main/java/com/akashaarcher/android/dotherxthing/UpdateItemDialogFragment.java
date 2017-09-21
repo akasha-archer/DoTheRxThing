@@ -17,8 +17,6 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.akashaarcher.android.dotherxthing.NewItemDialogFragment.newTaskEntry;
-
 /**
  * Created by akashaarcher on 9/20/17.
  */
@@ -43,12 +41,19 @@ public class UpdateItemDialogFragment extends DialogFragment {
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_update_task_dialog, null);
         ButterKnife.bind(this, v);
 
+        deleteTaskIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
                 .setTitle("Edit/Delete Task")
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                .setPositiveButton("EDIT", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -56,7 +61,7 @@ public class UpdateItemDialogFragment extends DialogFragment {
                 })
 
                 // negative button
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         updateDialogListener.onUpdateDialogNegativeClick(UpdateItemDialogFragment.this);
                     }
@@ -76,7 +81,7 @@ public class UpdateItemDialogFragment extends DialogFragment {
             @Override
             public void onClick(View onClick) {
                 updateTaskEntry = editTask.getText().toString();
-                if (newTaskEntry.isEmpty()) {
+                if (updateTaskEntry.isEmpty()) {
                     Toast.makeText(getActivity(), "Please edit your task", Toast.LENGTH_SHORT).show();
                 } else if (!updateTaskEntry.isEmpty()){
                     updateDialogListener.onUpdateDialogPositiveClick(UpdateItemDialogFragment.this);
