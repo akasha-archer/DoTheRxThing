@@ -10,31 +10,42 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.akashaarcher.android.dotherxthing.NewItemDialogFragment.newTaskEntry;
+
 /**
- * Created by Akasha on 9/14/17.
+ * Created by akashaarcher on 9/20/17.
  */
 
-public class NewItemDialogFragment extends DialogFragment {
+public class UpdateItemDialogFragment extends DialogFragment {
 
-    @BindView(R.id.task_entry)
-    EditText newItemEntry;
+    @BindView(R.id.delete_icon)
+    ImageView deleteTaskIv;
 
-    public static String newTaskEntry = "";
+    @BindView(R.id.delete_task_heading)
+    TextView deleteTaskTv;
+
+    @BindView(R.id.edit_task)
+    EditText editTask;
+
+    public static String updateTaskEntry = "";
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_add_task_dialog, null);
+        View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_update_task_dialog, null);
         ButterKnife.bind(this, v);
 
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
-                .setTitle("Add a New Item")
+                .setTitle("Edit/Delete Task")
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, null)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
@@ -47,11 +58,12 @@ public class NewItemDialogFragment extends DialogFragment {
                 // negative button
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        newItemDialogListener.onDialogNegativeClick(NewItemDialogFragment.this);
+                        updateDialogListener.onUpdateDialogNegativeClick(UpdateItemDialogFragment.this);
                     }
                 })
                 .create();
     }
+
 
     @Override
     public void onResume() {
@@ -63,11 +75,11 @@ public class NewItemDialogFragment extends DialogFragment {
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View onClick) {
-                newTaskEntry = newItemEntry.getText().toString();
+                updateTaskEntry = editTask.getText().toString();
                 if (newTaskEntry.isEmpty()) {
-                    Toast.makeText(getActivity(), "Please enter a task", Toast.LENGTH_SHORT).show();
-                } else if (!newTaskEntry.isEmpty()){
-                    newItemDialogListener.onDialogPositiveClick(NewItemDialogFragment.this);
+                    Toast.makeText(getActivity(), "Please edit your task", Toast.LENGTH_SHORT).show();
+                } else if (!updateTaskEntry.isEmpty()){
+                    updateDialogListener.onUpdateDialogPositiveClick(UpdateItemDialogFragment.this);
                     dialog.dismiss();
                 }
 
@@ -76,12 +88,12 @@ public class NewItemDialogFragment extends DialogFragment {
     }
 
 
-    public interface NewItemDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
+    public interface UpdateItemDialogListener {
+        public void onUpdateDialogPositiveClick(DialogFragment dialog);
+        public void onUpdateDialogNegativeClick(DialogFragment dialog);
     }
 
-    NewItemDialogListener newItemDialogListener;
+    UpdateItemDialogListener updateDialogListener;
 
 
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
@@ -91,13 +103,15 @@ public class NewItemDialogFragment extends DialogFragment {
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
-            newItemDialogListener = (NewItemDialogListener) activity;
+            updateDialogListener = (UpdateItemDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()
                     + " must implement NoticeDialogListener");
         }
     }
+
+
 
 
 }
