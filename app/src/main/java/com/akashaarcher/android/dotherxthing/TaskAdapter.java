@@ -1,5 +1,7 @@
 package com.akashaarcher.android.dotherxthing;
 
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,7 +83,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         public void bind(Task task) {
             final Task item = task;
-            taskNameTv.setText(task.getTaskEntry());
+            taskNameTv.setText(item.getTaskEntry());
+
+            deleteTaskIv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onDeleteBtnClicked(item);
+                }
+            });
+
+            editTaskIv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onEditBtnClicked(item);
+                }
+            });
 
             taskItemLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -92,10 +108,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
             });
         }
+
     }
 
     interface Listener {
         void onItemLongClicked(Task task);
+        void onDeleteBtnClicked(Task task);
+        void onEditBtnClicked(Task task);
     }
 
 }

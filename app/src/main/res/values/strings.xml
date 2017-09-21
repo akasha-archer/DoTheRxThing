@@ -3,8 +3,8 @@
 
     <string name="add_new_task">Add New Task</string>
     <string name="task_entry_hint">Enter a new task</string>
-    <string name="task_entry_edit_head">Edit Task</string>
-    <string name="task_delete_edit_head">Delete Task</string>
+    <string name="task_entry_edit_head">Edit Your Task Below</string>
+    <string name="task_delete_edit_head">Delete Task?</string>
     <string name="task_edit_hint">Update your task</string>
 
 </resources>

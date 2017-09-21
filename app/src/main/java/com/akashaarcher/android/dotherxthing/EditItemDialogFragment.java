@@ -10,8 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -21,13 +19,7 @@ import butterknife.ButterKnife;
  * Created by akashaarcher on 9/20/17.
  */
 
-public class UpdateItemDialogFragment extends DialogFragment {
-
-    @BindView(R.id.delete_icon)
-    ImageView deleteTaskIv;
-
-    @BindView(R.id.delete_task_heading)
-    TextView deleteTaskTv;
+public class EditItemDialogFragment extends DialogFragment {
 
     @BindView(R.id.edit_task)
     EditText editTask;
@@ -38,22 +30,15 @@ public class UpdateItemDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_update_task_dialog, null);
+        View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_edit_task_dialog, null);
         ButterKnife.bind(this, v);
-
-        deleteTaskIv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
 
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
-                .setTitle("Edit/Delete Task")
+                .setTitle("Edit Task")
                 .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton("EDIT", new DialogInterface.OnClickListener() {
+                .setPositiveButton("update", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -61,9 +46,9 @@ public class UpdateItemDialogFragment extends DialogFragment {
                 })
 
                 // negative button
-                .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        updateDialogListener.onUpdateDialogNegativeClick(UpdateItemDialogFragment.this);
+                        editItemDialogListener.onEditItemDialogNegativeClick(EditItemDialogFragment.this);
                     }
                 })
                 .create();
@@ -84,7 +69,7 @@ public class UpdateItemDialogFragment extends DialogFragment {
                 if (updateTaskEntry.isEmpty()) {
                     Toast.makeText(getActivity(), "Please edit your task", Toast.LENGTH_SHORT).show();
                 } else if (!updateTaskEntry.isEmpty()){
-                    updateDialogListener.onUpdateDialogPositiveClick(UpdateItemDialogFragment.this);
+                    editItemDialogListener.onEditItemDialogPositiveClick(EditItemDialogFragment.this);
                     dialog.dismiss();
                 }
 
@@ -93,12 +78,12 @@ public class UpdateItemDialogFragment extends DialogFragment {
     }
 
 
-    public interface UpdateItemDialogListener {
-        public void onUpdateDialogPositiveClick(DialogFragment dialog);
-        public void onUpdateDialogNegativeClick(DialogFragment dialog);
+    public interface EditItemDialogListener {
+        public void onEditItemDialogPositiveClick(DialogFragment dialog);
+        public void onEditItemDialogNegativeClick(DialogFragment dialog);
     }
 
-    UpdateItemDialogListener updateDialogListener;
+    EditItemDialogListener editItemDialogListener;
 
 
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
@@ -108,7 +93,7 @@ public class UpdateItemDialogFragment extends DialogFragment {
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
-            updateDialogListener = (UpdateItemDialogListener) activity;
+            editItemDialogListener = (EditItemDialogListener) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
             throw new ClassCastException(activity.toString()

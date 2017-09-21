@@ -25,7 +25,7 @@ import nl.qbusict.cupboard.QueryResultIterable;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-public class MainActivity extends AppCompatActivity implements NewItemDialogFragment.NewItemDialogListener, TaskAdapter.Listener, UpdateItemDialogFragment.UpdateItemDialogListener {
+public class MainActivity extends AppCompatActivity implements NewItemDialogFragment.NewItemDialogListener, TaskAdapter.Listener, EditItemDialogFragment.EditItemDialogListener, DeleteItemDialogFragment.DeleteItemDialogListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -64,19 +64,27 @@ public class MainActivity extends AppCompatActivity implements NewItemDialogFrag
         Log.i("Main Activity", "passed adapter");
     }
 
+    // DIALOG OPEN METHODS
+
     void openNewItemDialog() {
         FragmentManager manager = getSupportFragmentManager();
         DialogFragment newFragment = new NewItemDialogFragment();
         newFragment.show(manager, DIALOG_TITLE);
     }
 
-
     void openUpdateItemDialog() {
         FragmentManager manager = getSupportFragmentManager();
-        DialogFragment newFragment = new UpdateItemDialogFragment();
+        DialogFragment newFragment = new EditItemDialogFragment();
         newFragment.show(manager, DIALOG_TITLE);
     }
 
+    void openDeleteItemDialog() {
+        FragmentManager manager = getSupportFragmentManager();
+        DialogFragment newFragment = new DeleteItemDialogFragment();
+        newFragment.show(manager, DIALOG_TITLE);
+    }
+
+    // ADD NEW ITEM DIALOG
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         // User touched the dialog's positive button
@@ -94,8 +102,9 @@ public class MainActivity extends AppCompatActivity implements NewItemDialogFrag
         Toast.makeText(getApplicationContext(), "Transaction Cancelled", Toast.LENGTH_SHORT).show();
     }
 
+    // EDIT ITEM DIALOG
     @Override
-    public void onUpdateDialogPositiveClick(DialogFragment dialog) {
+    public void onEditItemDialogPositiveClick(DialogFragment dialog) {
         // User touched the dialog's positive button
         Log.i("UpdateAlertDialog", "Positive click!");
         Toast.makeText(getApplicationContext(), "Task Updated", Toast.LENGTH_SHORT).show();
@@ -104,13 +113,26 @@ public class MainActivity extends AppCompatActivity implements NewItemDialogFrag
     }
 
     @Override
-    public void onUpdateDialogNegativeClick(DialogFragment dialog) {
+    public void onEditItemDialogNegativeClick(DialogFragment dialog) {
         // User touched the dialog's negative button
         Log.i("UpdateAlertDialog", "Negative click!");
-        Toast.makeText(getApplicationContext(), "Update Cancelled", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Item edit Cancelled", Toast.LENGTH_SHORT).show();
 //        deleteTask(task);
 //        refreshTaskList();
     }
+
+
+    // DELETE ITEM DIALOG
+    @Override
+    public void onDeleteDialogPositiveClick(DialogFragment dialog) {
+        Toast.makeText(getApplicationContext(), "Item deleted", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDeleteDialogNegativeClick(DialogFragment dialog) {
+        Toast.makeText(getApplicationContext(), "delete item cancelled", Toast.LENGTH_SHORT).show();
+    }
+
 
     private void addTask(Task task) {
         cupboard().withDatabase(db).put(task);
@@ -123,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements NewItemDialogFrag
 
     private void updateTask() {
         String currEntry = NewItemDialogFragment.newTaskEntry;
-        Task task = new Task(UpdateItemDialogFragment.updateTaskEntry);
+        Task task = new Task(EditItemDialogFragment.updateTaskEntry);
         ContentValues values = new ContentValues(1);
         values.put("taskEntry", String.valueOf(task));
         cupboard().withDatabase(db).update(Task.class, values, "taskEntry = ?", currEntry);
@@ -149,13 +171,23 @@ public class MainActivity extends AppCompatActivity implements NewItemDialogFrag
         }
 
         return tasks;
-
     }
 
+    // VIEWHOLDER METHODS
     @Override
     public void onItemLongClicked(Task task) {
         Toast.makeText(this, "You longClicked me!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDeleteBtnClicked(Task task) {
+        openDeleteItemDialog();
+    }
+
+    @Override
+    public void onEditBtnClicked(Task task) {
         openUpdateItemDialog();
     }
+
 
 }
